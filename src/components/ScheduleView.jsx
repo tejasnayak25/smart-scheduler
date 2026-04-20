@@ -14,16 +14,16 @@ export default function ScheduleView() {
   const hasTasks = tasks.some(t => !t.completed);
 
   return (
-    <div className="h-full flex flex-col premium-glass rounded-3xl p-5 sm:p-7 md:p-8 lg:sticky lg:top-24 shadow-sm border border-slate-200 dark:border-slate-800 xl:max-h-[85vh] overflow-hidden">
+    <div className="h-full flex flex-col premium-glass rounded-2xl p-4 sm:p-5 md:p-6 lg:sticky lg:top-20 shadow-sm border border-slate-200 dark:border-slate-800 xl:max-h-[85vh] overflow-hidden">
       <div className="flex items-center justify-between mb-6 flex-shrink-0">
         <h2 className="text-lg font-semibold text-foreground">Today's Schedule</h2>
-        <button className="p-2 text-muted hover:text-primary transition-colors">
+        {/* <button className="p-2 text-muted hover:text-primary transition-colors">
           <Settings size={18} />
-        </button>
+        </button> */}
       </div>
 
       {/* Work Window Configuration */}
-      <div className="flex items-center gap-4 text-sm mb-6 muted-bg dark:bg-[#2c2c2e] p-3 rounded-xl border border-slate-100 dark:border-slate-700 flex-shrink-0">
+      <div className="flex items-center gap-3 text-sm mb-5 muted-bg dark:bg-[#2c2c2e] p-2 rounded-lg border border-slate-100 dark:border-slate-700 flex-shrink-0">
         <div className="flex flex-col flex-1">
           <label className="text-xs text-muted mb-1">Start Time</label>
           <input 
@@ -46,7 +46,7 @@ export default function ScheduleView() {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto pr-2 pb-4 -mr-2">
+      <div className="flex-1 overflow-y-auto pr-1 pb-3 -mr-2">
         {!schedule || schedule.blocks.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center min-h-[300px]">
             <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 text-primary rounded-2xl flex items-center justify-center">

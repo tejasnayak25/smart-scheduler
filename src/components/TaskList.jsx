@@ -34,7 +34,7 @@ export default function TaskList() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
                 layout
-                className={`premium-glass p-5 rounded-3xl flex items-center gap-4 transition-all hover:shadow-lg ${
+                className={`premium-glass p-3 rounded-2xl flex items-center gap-3 transition-all hover:shadow-lg ${
                   task.completed ? "opacity-50 grayscale hover:grayscale-0" : ""
                 }`}
               >

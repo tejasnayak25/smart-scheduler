@@ -35,35 +35,39 @@ export default function TimelineBlock({ block }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 20 }}
+      initial={{ opacity: 0, x: 10 }}
       animate={{ opacity: 1, x: 0 }}
-      className={`relative flex flex-col p-4 sm:p-5 rounded-2xl transition-all ${
+      className={`relative flex flex-col p-3 sm:p-4 rounded-lg transition-all ${
         isCompleted ? "opacity-40 grayscale hover:grayscale-0" : ""
       } ${
         isBreak 
           ? "bg-slate-50 dark:bg-[#1c1c1e] border border-dashed border-slate-200 dark:border-[#2c2c2e]"
           : block.warning
-            ? "glass-card border-l-[4px] border-l-red-500" 
-            : `glass-card premium-glass-hover ${block.priority === 5 ? "border-l-[4px] border-l-purple-500" : block.priority === 4 ? "border-l-[4px] border-l-orange-500" : "border-l-[4px] border-l-blue-500"}`
+            ? "glass-card border-l-[3px] border-l-red-500" 
+            : `glass-card premium-glass-hover ${block.priority === 5 ? "border-l-[3px] border-l-purple-500" : block.priority === 4 ? "border-l-[3px] border-l-orange-500" : "border-l-[3px] border-l-blue-500"}`
       }`}
     >
-      <div className="flex items-stretch gap-4">
-        {/* Interactive Toggle */}
-          {!isBreak && (
-          <button 
-            onClick={handleActionClick}
-            className="absolute left-[-16px] xl:left-[-20px] top-1/2 -translate-y-1/2 z-10 surface dark:bg-slate-900 rounded-full text-muted hover:text-primary transition-colors flex items-center justify-center border border-slate-200 dark:border-slate-800 shadow-sm disabled:opacity-50"
-            disabled={showInput}
-          >
-            {isCompleted ? <CheckCircle2 className="text-primary" size={24} /> : <Circle size={24} />}
-          </button>
-        )}
-
+      <div className="flex items-stretch gap-2">
         {/* Time column */}
-        <div className="flex flex-col justify-between items-end w-16 flex-shrink-0 text-sm font-medium">
+          <div className="flex flex-col justify-between items-end w-12 flex-shrink-0 text-sm font-medium pr-0">
           <span className="text-foreground">{block.startTime}</span>
-          <span className="text-muted text-xs">{block.duration}m</span>
+            <span className="text-muted text-[11px]">{block.duration}m</span>
           <span className="text-muted">{block.endTime}</span>
+        </div>
+
+        {/* Compact toggle placed between time and decorative line to avoid overlap */}
+        <div className="flex items-center justify-center w-6 flex-shrink-0">
+          {!isBreak && (
+            <button
+              onClick={handleActionClick}
+              className="w-5 h-5 rounded-full text-muted hover:text-primary flex items-center justify-center bg-surface dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm z-10"
+              aria-pressed={isCompleted}
+              aria-label={isCompleted ? 'Mark undone' : 'Mark done'}
+              disabled={showInput}
+            >
+              {isCompleted ? <CheckCircle2 className="text-primary" size={12} /> : <Circle size={12} />}
+            </button>
+          )}
         </div>
 
         {/* Decorative Line */}
@@ -121,7 +125,7 @@ export default function TimelineBlock({ block }) {
             initial={{ height: 0, opacity: 0, marginTop: 0 }}
             animate={{ height: "auto", opacity: 1, marginTop: 12 }}
             exit={{ height: 0, opacity: 0, marginTop: 0 }}
-            className="overflow-hidden muted-bg dark:bg-slate-800/50 rounded-lg flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 ml-16"
+            className="overflow-hidden muted-bg dark:bg-slate-800/50 rounded-lg flex items-center justify-between p-3 border border-slate-200 dark:border-slate-700 sm:ml-16 ml-0"
           >
             <div className="flex items-center gap-3">
               <label className="text-sm font-medium text-muted">Actual Mins:</label>

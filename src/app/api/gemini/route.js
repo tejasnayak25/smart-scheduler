@@ -55,7 +55,7 @@ export async function POST(req) {
       contents: prompt,
       config: {
         systemInstruction:
-          'You extract tasks from user text and return only structured JSON. Fill missing values with defaults: durationMinutes=30, priority=3, deadline=null. Keep priority between 1 and 5.',
+          'You extract tasks from user text and return only structured JSON. Fill missing values with defaults: durationMinutes=30, priority=3, deadline=null. Keep priority between 1 and 5. IMPORTANT: return the `deadline` field as an ISO 8601 timestamp (UTC) like 2026-04-22T10:00:00Z or null. Do not return relative dates (e.g., "tomorrow") or human-friendly phrases.',
         responseMimeType: 'application/json',
         responseSchema: {
           type: 'array',

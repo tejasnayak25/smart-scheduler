@@ -174,17 +174,17 @@ export default function TaskForm() {
             <div className="mt-2 space-y-2 rounded-xl border border-slate-200 dark:border-slate-700 p-3 muted-bg dark:bg-[#1c1c1e]">
               <p className="text-xs font-medium text-muted">Review AI suggestions before adding:</p>
               {pendingAiTasks.map((task, index) => (
-                <div key={`pending-ai-task-${index}`} className="grid grid-cols-1 sm:grid-cols-6 gap-2">
+                <div key={`pending-ai-task-${index}`} className="grid grid-cols-1 md:grid-cols-6 gap-2">
                   <input
                     id={`ai-title-${index}`}
                     value={task.title || ''}
                     onChange={(e) => updatePendingTask(index, 'title', e.target.value)}
                     aria-invalid={String(task.title || '').trim().length === 0}
-                    className={`sm:col-span-3 surface dark:bg-[#2c2c2e] rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/50 ${String(task.title || '').trim().length === 0 ? 'border border-red-300 dark:border-red-800 bg-red-50/60 dark:bg-red-500/10' : ''}`}
+                    className={`sm:col-span-3 surface dark:bg-[#2c2c2e] rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/50 min-w-0 ${String(task.title || '').trim().length === 0 ? 'border border-red-300 dark:border-red-800 bg-red-50/60 dark:bg-red-500/10' : ''}`}
                     placeholder="Task title"
                   />
                   {String(task.title || '').trim().length === 0 && (
-                    <p className="sm:col-span-6 text-xs text-red-600 dark:text-red-400">Title required</p>
+                    <p className="md:col-span-6 text-xs text-red-600 dark:text-red-400">Title required</p>
                   )}
                   <input
                     type="number"
@@ -192,12 +192,12 @@ export default function TaskForm() {
                     step="5"
                     value={task.durationMinutes ?? 30}
                     onChange={(e) => updatePendingTask(index, 'durationMinutes', e.target.value)}
-                    className="sm:col-span-1 surface dark:bg-[#2c2c2e] rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/50"
+                    className="md:col-span-1 surface dark:bg-[#2c2c2e] rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/50 min-w-0"
                   />
                   <select
                     value={task.priority ?? 3}
                     onChange={(e) => updatePendingTask(index, 'priority', e.target.value)}
-                    className="sm:col-span-1 surface dark:bg-[#2c2c2e] rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/50"
+                    className="md:col-span-1 surface dark:bg-[#2c2c2e] rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/50 min-w-0"
                   >
                     <option value={1}>P1</option>
                     <option value={2}>P2</option>
@@ -209,19 +209,19 @@ export default function TaskForm() {
                     type="datetime-local"
                     value={task.deadline ? String(task.deadline).slice(0, 16) : ''}
                     onChange={(e) => updatePendingTask(index, 'deadline', e.target.value || null)}
-                    className="sm:col-span-1 surface dark:bg-[#2c2c2e] rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/50"
+                    className="md:col-span-1 surface dark:bg-[#2c2c2e] rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/50 min-w-0"
                   />
                   <button
                     type="button"
                     onClick={() => removePendingTask(index)}
-                    className="sm:col-span-6 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                    className="md:col-span-6 inline-flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
                   >
                     <X size={14} /> Remove
                   </button>
                 </div>
               ))}
 
-              <div className="flex gap-2 pt-1">
+              <div className="flex flex-col sm:flex-row gap-2 pt-1">
                 <button
                   type="button"
                   onClick={handleGeminiParse}
