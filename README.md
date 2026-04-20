@@ -1,3 +1,5 @@
+[![CI](https://github.com/tejasnayak25/smart-scheduler/actions/workflows/ci.yml/badge.svg)](https://github.com/tejasnayak25/smart-scheduler/actions)
+
 ## Smart Scheduler
 
 AI-assisted daily planning app with:
