@@ -14,6 +14,13 @@ export const useTaskStore = create(persist((set) => ({
     end: '17:00'
   },
   schedule: null,
+  breakSettings: {
+    breakLength: 10,
+    breakAfterMinutes: 90,
+    fixedBreaks: [] // array of { start: 'HH:mm', duration: minutes }
+  },
+
+  setBreakSettings: (settings) => set((state) => ({ breakSettings: { ...state.breakSettings, ...settings } })),
   
   addTask: (task) => set((state) => ({
     tasks: [...state.tasks, {
@@ -59,7 +66,7 @@ export const useTaskStore = create(persist((set) => ({
   })),
 
   generateMySchedule: () => set((state) => {
-    const result = generateSchedule(state.tasks, state.workWindow);
+    const result = generateSchedule(state.tasks, state.workWindow, state.breakSettings);
     return { schedule: result };
   }),
 
@@ -70,7 +77,7 @@ export const useTaskStore = create(persist((set) => ({
     const newStart = format(rounded, 'HH:mm');
 
     const newWindow = { ...state.workWindow, start: newStart };
-    const result = generateSchedule(state.tasks, newWindow);
+    const result = generateSchedule(state.tasks, newWindow, state.breakSettings);
     
     return {
       workWindow: newWindow,
@@ -84,5 +91,6 @@ export const useTaskStore = create(persist((set) => ({
     tasks: state.tasks,
     learningStats: state.learningStats,
     workWindow: state.workWindow,
+    breakSettings: state.breakSettings,
   }),
 }));

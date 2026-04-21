@@ -3,6 +3,8 @@
 import { useTaskStore } from "@/store/useTaskStore";
 import { Coffee, Settings, Play, Info, TimerReset } from "lucide-react";
 import TimelineBlock from "./TimelineBlock";
+import ScheduleSettings from "./ScheduleSettings";
+import { useState } from "react";
 
 export default function ScheduleView() {
   const { workWindow, updateWorkWindow, schedule, generateMySchedule, tasks, rescheduleFromNow } = useTaskStore();
@@ -13,17 +15,20 @@ export default function ScheduleView() {
 
   const hasTasks = tasks.some(t => !t.completed);
 
+  const [showSettings, setShowSettings] = useState(false);
+
   return (
-    <div className="h-full flex flex-col premium-glass rounded-2xl p-4 sm:p-5 md:p-6 lg:sticky lg:top-20 shadow-sm border border-slate-200 dark:border-slate-800 xl:max-h-[85vh] overflow-hidden">
-      <div className="flex items-center justify-between mb-6 flex-shrink-0">
-        <h2 className="text-lg font-semibold text-foreground">Today's Schedule</h2>
-        {/* <button className="p-2 text-muted hover:text-primary transition-colors">
+    <div className="h-full flex flex-col premium-glass rounded-2xl p-3 sm:p-4 md:p-5 lg:sticky lg:top-20 shadow-sm border border-slate-200 dark:border-slate-800 xl:max-h-[85vh] overflow-hidden">
+      <div className="flex items-center justify-between mb-4 shrink-0">
+        <h2 className="text-lg font-semibold text-foreground">Today&apos;s Schedule</h2>
+        <button onClick={() => setShowSettings(true)} className="p-2 text-muted hover:text-primary transition-colors cursor-pointer">
           <Settings size={18} />
-        </button> */}
+        </button>
+        {showSettings && <ScheduleSettings onClose={() => setShowSettings(false)} />}
       </div>
 
       {/* Work Window Configuration */}
-      <div className="flex items-center gap-3 text-sm mb-5 muted-bg dark:bg-[#2c2c2e] p-2 rounded-lg border border-slate-100 dark:border-slate-700 flex-shrink-0">
+      <div className="flex items-center gap-2 text-sm mb-4 muted-bg dark:bg-[#2c2c2e] p-2 rounded-lg border border-slate-100 dark:border-slate-700 flex-shrink-0">
         <div className="flex flex-col flex-1">
           <label className="text-xs text-muted mb-1">Start Time</label>
           <input 
@@ -46,7 +51,7 @@ export default function ScheduleView() {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto pr-1 pb-3 -mr-2">
+      <div className="flex-1 overflow-y-auto pr-1 pb-2 -mr-1">
         {!schedule || schedule.blocks.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center min-h-[300px]">
             <div className="w-16 h-16 mx-auto mb-4 bg-primary/10 text-primary rounded-2xl flex items-center justify-center">
@@ -67,11 +72,11 @@ export default function ScheduleView() {
             </button>
           </div>
         ) : (
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2.5">
             {schedule.overflow && (
               <div className="mb-2 p-3 bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-sm rounded-xl flex items-start gap-2 border border-red-100 dark:border-red-900/30">
                 <Info size={16} className="mt-0.5 flex-shrink-0 relative top-px" />
-                <p>Some of your tasks don't fit within your work window. Consider splitting them or adjusting your hours.</p>
+                <p>Some of your tasks don&apos;t fit within your work window. Consider splitting them or adjusting your hours.</p>
               </div>
             )}
             
@@ -79,7 +84,7 @@ export default function ScheduleView() {
               <TimelineBlock key={block.id} block={block} />
             ))}
 
-            <div className="flex gap-3 mt-4">
+            <div className="flex gap-2 mt-3">
               <button 
                 onClick={handleGenerate}
                 className="flex-1 surface dark:bg-slate-800 text-foreground font-medium py-3 rounded-xl hover:opacity-95 transition-colors shadow-sm"

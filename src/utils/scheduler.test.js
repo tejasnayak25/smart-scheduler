@@ -40,9 +40,40 @@ describe('generateSchedule', () => {
 
     const result = generateSchedule(tasks, { start: '09:00', end: '17:00' });
     const taskBlocks = result.blocks.filter((b) => b.type === 'task');
-
+    // With 130 minutes, chunks are 60,60,10; expect 3 task blocks after scheduling.
     expect(taskBlocks).toHaveLength(3);
     expect(taskBlocks[0].chunkId).toBe(1);
     expect(taskBlocks[0].totalChunks).toBe(3);
+  });
+
+  it('inserts fixed scheduled breaks at specified times', () => {
+    const tasks = [
+      { id: 'a', title: 'Task A', durationMinutes: 120, priority: 3, deadline: null, completed: false },
+    ];
+
+    const result = generateSchedule(tasks, { start: '09:00', end: '17:00' }, { fixedBreaks: [{ start: '10:00', duration: 30 }] });
+    // Expect a break at 10:00 with duration 30
+    const fixed = result.blocks.find(b => b.type === 'break' && b.duration === 30 && b.startTime === '10:00');
+    expect(fixed).toBeDefined();
+    // Ensure task chunks exist before and after the fixed break
+    const taskBlocks = result.blocks.filter(b => b.type === 'task');
+    expect(taskBlocks.length).toBeGreaterThanOrEqual(2);
+    expect(taskBlocks[0].endTime).toBe('10:00');
+  });
+
+  it('uses custom fixed break title when provided', () => {
+    const tasks = [
+      { id: 'a', title: 'Task A', durationMinutes: 90, priority: 3, deadline: null, completed: false },
+    ];
+
+    const result = generateSchedule(
+      tasks,
+      { start: '09:00', end: '17:00' },
+      { fixedBreaks: [{ title: 'Lunch', start: '10:00', duration: 30 }] }
+    );
+
+    const fixed = result.blocks.find((b) => b.type === 'break' && b.startTime === '10:00');
+    expect(fixed).toBeDefined();
+    expect(fixed.title).toBe('Lunch');
   });
 });

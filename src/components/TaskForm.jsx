@@ -156,7 +156,7 @@ export default function TaskForm() {
               type="button"
               onClick={handleGeminiParse}
               disabled={isParsingRemote}
-              className="px-4 py-3 bg-primary text-primary-foreground rounded-xl font-medium inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-3 bg-primary text-primary-foreground rounded-xl font-medium inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               <Sparkles size={16} className="text-primary-foreground/90" />
               {isParsingRemote ? 'Parsing...' : 'Parse'}

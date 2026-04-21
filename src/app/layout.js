@@ -17,7 +17,7 @@ export default function RootLayout({ children }) {
         <Header />
         
         {/* App body pushed down nicely under the floating header. Adjusted mobile padding. */}
-        <main className="container mx-auto px-3 sm:px-6 pt-24 md:pt-32 pb-12 relative z-10 max-w-6xl animate-in fade-in duration-500">
+        <main className="container mx-auto px-3 sm:px-6 pt-24 md:pt-32 pb-12 relative max-w-6xl animate-in fade-in duration-500">
           {children}
         </main>
       </body>

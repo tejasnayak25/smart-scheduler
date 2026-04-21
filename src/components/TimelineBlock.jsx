@@ -37,7 +37,7 @@ export default function TimelineBlock({ block }) {
     <motion.div
       initial={{ opacity: 0, x: 10 }}
       animate={{ opacity: 1, x: 0 }}
-      className={`relative flex flex-col p-3 sm:p-4 rounded-lg transition-all ${
+      className={`relative flex flex-col p-2.5 sm:p-3 rounded-lg transition-all ${
         isCompleted ? "opacity-40 grayscale hover:grayscale-0" : ""
       } ${
         isBreak 
@@ -47,25 +47,25 @@ export default function TimelineBlock({ block }) {
             : `glass-card premium-glass-hover ${block.priority === 5 ? "border-l-[3px] border-l-purple-500" : block.priority === 4 ? "border-l-[3px] border-l-orange-500" : "border-l-[3px] border-l-blue-500"}`
       }`}
     >
-      <div className="flex items-stretch gap-2">
+      <div className="flex items-stretch gap-1.5">
         {/* Time column */}
-          <div className="flex flex-col justify-between items-end w-12 flex-shrink-0 text-sm font-medium pr-0">
+          <div className="flex flex-col justify-between items-end w-11 flex-shrink-0 text-sm font-medium pr-0">
           <span className="text-foreground">{block.startTime}</span>
             <span className="text-muted text-[11px]">{block.duration}m</span>
           <span className="text-muted">{block.endTime}</span>
         </div>
 
         {/* Compact toggle placed between time and decorative line to avoid overlap */}
-        <div className="flex items-center justify-center w-6 flex-shrink-0">
+        <div className="flex items-center justify-center w-5 flex-shrink-0">
           {!isBreak && (
             <button
               onClick={handleActionClick}
-              className="w-5 h-5 rounded-full text-muted hover:text-primary flex items-center justify-center bg-surface dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm z-10"
+              className="w-[18px] h-[18px] rounded-full text-muted hover:text-primary flex items-center justify-center bg-surface dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm z-10"
               aria-pressed={isCompleted}
               aria-label={isCompleted ? 'Mark undone' : 'Mark done'}
               disabled={showInput}
             >
-              {isCompleted ? <CheckCircle2 className="text-primary" size={12} /> : <Circle size={12} />}
+              {isCompleted ? <CheckCircle2 className="text-primary" size={11} /> : <Circle size={11} />}
             </button>
           )}
         </div>
@@ -99,7 +99,7 @@ export default function TimelineBlock({ block }) {
           </div>
 
           {!isBreak && (
-            <div className="flex flex-wrap items-center gap-3 mt-2 text-xs text-muted font-medium">
+            <div className="flex flex-wrap items-center gap-2 mt-1.5 text-xs text-muted font-medium">
               {block.priority && (
                 <span className="flex items-center gap-1 muted-bg dark:bg-slate-800 px-2 py-0.5 rounded-md">
                   <Flag size={12} className={block.priority >= 4 ? "text-orange-500" : "text-blue-500"} />

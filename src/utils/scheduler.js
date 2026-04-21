@@ -7,7 +7,7 @@ import { calculateTaskScore } from './scoring';
  * @param {Object} workWindow - { start: 'HH:mm', end: 'HH:mm' }
  * @returns {Object} { blocks: Array, overflow: boolean }
  */
-export function generateSchedule(tasks, workWindow) {
+export function generateSchedule(tasks, workWindow, options = {}) {
   if (!tasks || tasks.length === 0) return { blocks: [], overflow: false };
 
   // Parse against an arbitrary date (today) for baseline calculation
@@ -15,82 +15,118 @@ export function generateSchedule(tasks, workWindow) {
   const startTime = parse(workWindow.start, 'HH:mm', today);
   const endTime = parse(workWindow.end, 'HH:mm', today);
 
-  // Pre-process: Splinter long tasks into chunks (max 60 minutes)
-  const chunkedTasks = [];
-  for (const task of tasks) {
-    if (task.completed) continue;
-    
-    if (task.durationMinutes > 60) {
-      const numChunks = Math.ceil(task.durationMinutes / 60);
-      let remainingDuration = task.durationMinutes;
-      
-      for (let i = 1; i <= numChunks; i++) {
-        const chunkDuration = Math.min(60, remainingDuration);
-        chunkedTasks.push({
-          ...task,
-          id: `${task.id}_chunk_${i}`, // Unique ID for React map
-          originalId: task.id,
-          durationMinutes: chunkDuration,
-          chunkId: i,
-          totalChunks: numChunks,
-          scorePenalty: (i - 1) * 2 // Increase penalty (-2, -4) for later chunks
-        });
-        remainingDuration -= chunkDuration;
-      }
-    } else {
-      chunkedTasks.push(task);
-    }
-  }
-
   // Filter out completed tasks and sort by dynamic intelligence score descending
-  const orderedTasks = chunkedTasks
+  const orderedTasks = tasks
+    .filter((t) => !t.completed)
+    .map((t) => ({ ...t }))
     .sort((a, b) => calculateTaskScore(b) - calculateTaskScore(a));
 
   const blocks = [];
   let currentTime = startTime;
   let continuousWork = 0;
   let hasOverflow = false;
+  const breakLength = Number.isFinite(Number(options.breakLength)) ? Number(options.breakLength) : 10;
+  const breakAfter = Number.isFinite(Number(options.breakAfterMinutes)) ? Number(options.breakAfterMinutes) : 90;
+  const fixedBreaksInput = Array.isArray(options.fixedBreaks) ? options.fixedBreaks : [];
+  // normalize fixed breaks to parsed Date ranges (today)
+  const fixedBreaks = fixedBreaksInput
+    .map((b) => {
+      const start = parse(b.start, 'HH:mm', today);
+      return {
+        title: String(b.title || '').trim() || 'Scheduled break',
+        start,
+        end: addMinutes(start, Number(b.duration || b.durationMinutes || b.length || 0)),
+        duration: Number(b.duration || b.durationMinutes || b.length || 0)
+      };
+    })
+    .filter(b => isAfter(b.end, startTime)) // ignore breaks completely before work window
+    .sort((a, b) => a.start - b.start);
+  let nextFixedIndex = 0;
 
   for (const task of orderedTasks) {
-    // Break rule: 10 mins break after >= 90 mins continuous work
-    if (continuousWork >= 90) {
-      const breakEndTime = addMinutes(currentTime, 10);
+    // schedule the task in pieces to honor both max chunk size (60) and the 90-min continuous work rule
+    let remaining = task.durationMinutes;
+    const totalChunks = Math.ceil(task.durationMinutes / 60);
+    let chunkIndex = 1;
+
+    while (remaining > 0) {
+      // If a fixed break is due now, insert it first
+      const nextFixed = fixedBreaks[nextFixedIndex];
+      if (nextFixed && !isAfter(nextFixed.start, currentTime)) {
+        // if nextFixed.start < currentTime, it means a break overlaps with work Window start
+        // or we reached it.
+        const actualStart = isAfter(nextFixed.start, currentTime) ? format(nextFixed.start, 'HH:mm') : format(currentTime, 'HH:mm');
+        
+        blocks.push({
+          id: `fixedbreak_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+          type: 'break',
+          title: nextFixed.title || 'Scheduled break',
+          startTime: actualStart,
+          endTime: format(nextFixed.end, 'HH:mm'),
+          duration: nextFixed.duration,
+          fixed: true
+        });
+        currentTime = nextFixed.end;
+        continuousWork = 0;
+        nextFixedIndex += 1;
+        // continue scheduling remaining of the same task after the fixed break
+        continue;
+      }
+      // Insert break if we've already worked >= 90 mins
+      if (continuousWork >= breakAfter) {
+        const breakEndTime = addMinutes(currentTime, breakLength);
+        blocks.push({
+          id: `break_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
+          type: 'break',
+          title: 'Take a breather',
+          startTime: format(currentTime, 'HH:mm'),
+          endTime: format(breakEndTime, 'HH:mm'),
+          duration: breakLength
+        });
+        currentTime = breakEndTime;
+        continuousWork = 0;
+      }
+
+      const availableBeforeBreak = Math.max(0, breakAfter - continuousWork);
+      // also cap by time until next fixed break (if any)
+      const upcomingFixed = fixedBreaks[nextFixedIndex];
+      const minutesUntilFixed = upcomingFixed ? Math.max(0, Math.round((upcomingFixed.start - currentTime) / 60000)) : Infinity;
+      // max piece we can schedule now is min(remaining, 60)
+      let piece = Math.min(remaining, 60);
+      // if scheduling piece would exceed availableBeforeBreak, cap it so break happens mid-task
+      if (availableBeforeBreak > 0 && piece > availableBeforeBreak) {
+        piece = availableBeforeBreak;
+      }
+      // if there's a fixed break coming before our piece would end, cap the piece
+      if (minutesUntilFixed < piece) {
+        piece = minutesUntilFixed;
+      }
+
+      const pieceEnd = addMinutes(currentTime, piece);
+      if (isAfter(pieceEnd, endTime)) hasOverflow = true;
+
       blocks.push({
-        id: `break_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
-        type: 'break',
-        title: 'Take a breather',
+        id: `block_${task.id}_chunk_${chunkIndex}_${Date.now()}`,
+        type: 'task',
+        taskId: task.id,
+        title: task.title,
+        priority: task.priority,
+        deadline: task.deadline,
+        chunkId: chunkIndex,
+        totalChunks,
         startTime: format(currentTime, 'HH:mm'),
-        endTime: format(breakEndTime, 'HH:mm'),
-        duration: 10
+        endTime: format(pieceEnd, 'HH:mm'),
+        duration: piece,
+        warning: isAfter(pieceEnd, endTime)
       });
-      currentTime = breakEndTime;
-      continuousWork = 0;
+
+      currentTime = pieceEnd;
+      continuousWork += piece;
+      remaining -= piece;
+      chunkIndex += 1;
+
+      // if we filled up to availableBeforeBreak exactly, the next loop will insert a break
     }
-
-    const taskEndTime = addMinutes(currentTime, task.durationMinutes);
-    
-    // Check overflow
-    if (isAfter(taskEndTime, endTime)) {
-      hasOverflow = true;
-    }
-
-    blocks.push({
-      id: `block_${task.id}`,
-      type: 'task',
-      taskId: task.id,
-      title: task.title,
-      priority: task.priority,
-      deadline: task.deadline,
-      chunkId: task.chunkId,
-      totalChunks: task.totalChunks,
-      startTime: format(currentTime, 'HH:mm'),
-      endTime: format(taskEndTime, 'HH:mm'),
-      duration: task.durationMinutes,
-      warning: isAfter(taskEndTime, endTime) // Highlight if this block overflows
-    });
-
-    currentTime = taskEndTime;
-    continuousWork += task.durationMinutes;
   }
 
   return { blocks, overflow: hasOverflow };
