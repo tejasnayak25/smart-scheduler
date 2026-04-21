@@ -176,9 +176,9 @@ export default function ScheduleSettings({ onClose }) {
               {fixedBreaks.map((fb, idx) => (
                 <div key={idx} className="surface border border-slate-200 dark:border-slate-800 rounded-[1.25rem] p-4 shadow-sm group hover:border-primary/30 transition-colors">
                   <div className="flex items-start justify-between gap-4 mb-3">
-                    <div className="flex-1">
+                    <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <Tag size={16} className="text-muted" />
+                        <Tag size={16} className="text-muted shrink-0" />
                         <input
                           type="text"
                           value={fb.title || ""}
@@ -187,7 +187,7 @@ export default function ScheduleSettings({ onClose }) {
                             setFixedBreaks((cur) => cur.map((item, i) => (i === idx ? { ...item, title: nextTitle } : item)));
                             setError("");
                           }}
-                          className="flex-1 bg-transparent border-b-2 border-transparent focus:border-primary outline-none transition-colors text-[15px] font-semibold text-foreground placeholder:text-muted/50 py-0.5"
+                          className="flex-1 min-w-0 w-full bg-transparent border-b-2 border-transparent focus:border-primary outline-none transition-colors text-[15px] font-semibold text-foreground placeholder:text-muted/50 py-0.5"
                           placeholder="Break title (e.g. Lunch)"
                         />
                       </div>
@@ -197,7 +197,7 @@ export default function ScheduleSettings({ onClose }) {
                         setFixedBreaks((cur) => cur.filter((_, i) => i !== idx));
                         setError("");
                       }}
-                      className="text-muted hover:text-red-500 bg-slate-100 dark:bg-slate-800/80 hover:bg-red-50 dark:hover:bg-red-500/20 p-2 rounded-xl transition-all opacity-100 sm:opacity-0 group-hover:opacity-100 focus:opacity-100 cursor-pointer"
+                      className="text-muted hover:text-red-500 bg-slate-100 dark:bg-slate-800/80 hover:bg-red-50 dark:hover:bg-red-500/20 p-2 rounded-xl transition-all cursor-pointer shrink-0"
                       aria-label="Delete break"
                     >
                       <Trash2 size={16} />
