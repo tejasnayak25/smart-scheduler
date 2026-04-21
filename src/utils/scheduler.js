@@ -129,5 +129,18 @@ export function generateSchedule(tasks, workWindow, options = {}) {
     }
   }
 
+  // Pass 2: Calculate accurate totalChunks post-break-insertions
+  const chunkCounts = {};
+  for (const block of blocks) {
+    if (block.type === 'task') {
+      chunkCounts[block.taskId] = (chunkCounts[block.taskId] || 0) + 1;
+    }
+  }
+  for (const block of blocks) {
+    if (block.type === 'task') {
+      block.totalChunks = chunkCounts[block.taskId];
+    }
+  }
+
   return { blocks, overflow: hasOverflow };
 }

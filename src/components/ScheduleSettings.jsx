@@ -204,8 +204,8 @@ export default function ScheduleSettings({ onClose }) {
                     </button>
                   </div>
 
-                  <div className="flex flex-wrap md:flex-nowrap items-center gap-3 bg-slate-50 dark:bg-slate-900/50 p-2 rounded-xl">
-                    <div className="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 focus-within:ring-2 focus-within:ring-primary/30 transition-all flex-1 min-w-[120px]">
+                  <div className="flex flex-col sm:flex-row sm:flex-wrap md:flex-nowrap items-stretch sm:items-center gap-3 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl">
+                    <div className="flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 focus-within:ring-2 focus-within:ring-primary/30 transition-all flex-1 min-w-0">
                       <Clock size={16} className="text-primary hidden sm:block" />
                       <input
                         type="time"
@@ -215,13 +215,13 @@ export default function ScheduleSettings({ onClose }) {
                           setFixedBreaks((cur) => cur.map((item, i) => (i === idx ? { ...item, start: nextStart } : item)));
                           setError("");
                         }}
-                        className="bg-transparent outline-none text-sm font-semibold w-full text-foreground"
+                        className="bg-transparent outline-none text-sm font-semibold w-full text-foreground text-center sm:text-left"
                       />
                     </div>
 
-                    <span className="text-muted text-[11px] font-bold tracking-wider">TO</span>
+                    <span className="text-muted text-[11px] font-bold tracking-wider text-center hidden sm:block">TO</span>
 
-                    <div className="flex items-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 focus-within:ring-2 focus-within:ring-primary/30 transition-all w-[100px]">
+                    <div className="flex items-center justify-center gap-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 focus-within:ring-2 focus-within:ring-primary/30 transition-all flex-1 sm:w-[100px] sm:flex-none">
                       <input
                         type="number"
                         min="1"
@@ -236,7 +236,7 @@ export default function ScheduleSettings({ onClose }) {
                       <span className="text-[11px] font-bold text-muted">MIN</span>
                     </div>
 
-                    <div className="ml-auto text-xs font-bold text-muted bg-slate-100 dark:bg-slate-800 px-3 py-2 rounded-lg shrink-0">
+                    <div className="text-xs font-bold text-muted bg-slate-100 dark:bg-slate-800 px-3 py-2 rounded-lg text-center sm:ml-auto w-full sm:w-auto">
                       Ends {endTimeFrom(fb.start, fb.duration)}
                     </div>
                   </div>
@@ -263,34 +263,34 @@ export default function ScheduleSettings({ onClose }) {
                     />
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-3">
-                    <div className="flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-primary/30 transition-all shadow-sm">
+                  <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3">
+                    <div className="flex items-center justify-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-primary/30 transition-all shadow-sm flex-1 min-w-0">
                       <Clock size={16} className="text-primary hidden sm:block" />
                       <input
                         type="time"
                         value={newFixedStart}
                         onChange={(e) => setNewFixedStart(e.target.value)}
-                        className="bg-transparent outline-none text-sm font-semibold text-foreground"
+                        className="bg-transparent outline-none text-sm font-semibold text-foreground text-center sm:text-left w-full"
                       />
                     </div>
 
-                    <div className="flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-primary/30 transition-all shadow-sm">
+                    <div className="flex items-center justify-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700/50 rounded-xl px-3 py-2 focus-within:ring-2 focus-within:ring-primary/30 transition-all shadow-sm flex-1 sm:w-auto">
                       <Hourglass size={16} className="text-primary hidden sm:block" />
                       <input
                         type="number"
                         min="1"
                         value={newFixedDuration}
                         onChange={(e) => setNewFixedDuration(Number(e.target.value))}
-                        className="bg-transparent outline-none text-sm font-semibold w-12 text-center text-foreground"
+                        className="bg-transparent outline-none text-sm font-semibold flex-1 text-center text-foreground"
                       />
                       <span className="text-[11px] font-bold text-muted">MIN</span>
                     </div>
 
                     <button
                       onClick={addFixedBreak}
-                      className="ml-auto px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition-all flex items-center gap-2 shadow-[0_4px_14px_rgba(0,122,255,0.3)] hover:scale-[1.02] active:scale-95 cursor-pointer"
+                      className="sm:ml-auto w-full sm:w-auto px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-[0_4px_14px_rgba(0,122,255,0.3)] hover:scale-[1.02] active:scale-95 cursor-pointer"
                     >
-                      <Plus size={16} strokeWidth={3} /> <span className="hidden sm:inline">Add Break</span>
+                      <Plus size={16} strokeWidth={3} /> <span>Add Break</span>
                     </button>
                   </div>
                 </div>
